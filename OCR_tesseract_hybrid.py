@@ -40,7 +40,6 @@ class InvoiceExtraction:
 
         for para in self.extract_key_paragraphs(text):
             for ent in self.nlp(para).ents:
-                print(ent.label_+ " - "+ent.text)
 
                 if ent.label_ == 'INVOICE_NUMBER':
                     invoice_number = ent.text.strip()
@@ -55,11 +54,8 @@ class InvoiceExtraction:
                 #Assuming hightest Money entity would be the total amount
                 elif ent.label_ == 'MONEY' and total_amount_due<float(ent.text.strip()):
                     total_amount_due = float(ent.text.strip())
-        # print()
-        # print('Invoice Number:', invoice_number)
-        # print('Invoice Date:', invoice_date)
-        # print('Due Date:', due_date)
-        # print('Total Amount Due:', total_amount_due)
+        if(invoice_number == None):
+            invoice_number = re.findall(r'(?i)Invoice\s(?i)(?:Number|no|:)+\s*([A-Z0-9-]+)',text)[0]
         return json.dumps([
         {
             "fieldName": "invoice Id",
